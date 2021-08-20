@@ -2,11 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\DTOs\LocationDTO;
+use App\DTOs\LocationFaceDTO;
 use App\DTOs\RoverDTO;
+use App\ObjectModels\RoverControllerServiceCollection;
+use App\Services\RoverControllerService;
+use App\Services\RunRoversService;
 use Faker\Generator as Faker;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Validator;
-use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
 
 class MoveRovers extends Command
 {
@@ -24,9 +29,44 @@ class MoveRovers extends Command
     {
         $playGroundSizeString = $this->getPlaygroundSize();
         $normalizedPlayGroundSize = $this->normalizeLocationPath($playGroundSizeString);
-        $createdRovers = $this->createRovers($faker, $normalizedPlayGroundSize);
-        die(json_encode($createdRovers));
-        return 0;
+        $roverControllerServiceCollection = $this->createRovers($faker, $normalizedPlayGroundSize);
+        $runRoversService = new RunRoversService($roverControllerServiceCollection);
+        $runRoversService->moveAll();
+        $this->showResult($roverControllerServiceCollection, $normalizedPlayGroundSize);
+    }
+
+    private function showResult(
+        RoverControllerServiceCollection $roverControllerServiceCollection,
+        LocationDTO $normalizedPlayGroundSize
+    ): void {
+        $this->info('======  WWwooooww, That`s it, I hope you enjoy the results  =====');
+        $this->showResultInSeparateLines($roverControllerServiceCollection, $normalizedPlayGroundSize);
+    }
+
+    private function showResultInSeparateLines(
+        RoverControllerServiceCollection $roverControllerServiceCollection,
+        LocationDTO $playGroundSize
+    ) {
+        $roverControllerServiceCollection->each(function (RoverControllerService $roverControllerService) use ($playGroundSize) {
+            $name = $roverControllerService->roverDTO->name;
+            $currentPosition = $this->validateFinalLocation(
+                $playGroundSize,
+                $roverControllerService->getCurrentLocation()
+            ) ? json_encode($roverControllerService->getCurrentLocation()) : 'This rover is not in a valid location of plateau :(';
+            $roverFace = $roverControllerService->facing;
+            $this->info("
+            Rover_name: $name,
+            Rover_currentPosition: $currentPosition
+            Rover_face_orientation: $roverFace
+            ---------------------------------------
+            ");
+        });
+    }
+
+    private function validateFinalLocation(LocationDTO $playGroundSize, LocationDTO $roverCurrentLocation):bool
+    {
+        return ($roverCurrentLocation->x >= 0 && $roverCurrentLocation->y >= 0) &&
+            ($playGroundSize >= $roverCurrentLocation);
     }
 
     private function getPlaygroundSize(): string
@@ -44,32 +84,31 @@ class MoveRovers extends Command
         return $playGroundSize;
     }
 
-    #[ArrayShape(['x' => "string", 'y' => "string"])] private function normalizeLocationPath(string $pathWithSpace): array
+    #[Pure] private function normalizeLocationPath(string $pathWithSpace): LocationDTO
     {
         $explodePath = explode(' ', $pathWithSpace);
 
-        return [
-            'x' => $explodePath[0],
-            'y' => $explodePath[1]
-        ];
+        return new LocationDTO($explodePath[0], $explodePath[1]);
     }
 
-    private function createRovers(Faker $faker, array $normalizedPlayGroundSize): array
+    private function createRovers(Faker $faker, LocationDTO $playGroundSize): RoverControllerServiceCollection
     {
+        $roverCollection = new RoverControllerServiceCollection();
         do {
             $roverName = $faker->name;
-            $roversLocation[$roverName] = $this->createRover($roverName, $normalizedPlayGroundSize);
+            $roverDTO = $this->createRoverBaseOnPlayGroundSize($roverName, $playGroundSize);
+            $roverCollection(new RoverControllerService($roverDTO));
         } while ($this->confirm('Do you have another rover?'));
 
-        return $roversLocation;
+        return $roverCollection;
     }
 
-    private function createRover(string $roverName, array $normalizedPlayGroundSize): RoverDTO
+    private function createRoverBaseOnPlayGroundSize(string $roverName, LocationDTO $playGroundSize): RoverDTO
     {
-        $location = $this->getRoverLocation($roverName, $normalizedPlayGroundSize);
+        $locationFace = $this->getRoverLocationFace($roverName, $playGroundSize);
         $moves = $this->getRoverMoves($roverName);
 
-        return new RoverDTO($location, $moves);
+        return new RoverDTO($roverName, $locationFace, $moves);
     }
 
     private function getRoverMoves(string $roverName): string
@@ -84,23 +123,35 @@ class MoveRovers extends Command
             ]);
         } while ($validator->errors()->getMessages() != []);
 
-        return $moves;
+        return strtolower($moves);
     }
 
-    private function getRoverLocation(string $roverName, array $normalizedPlayGroundSize): string
+    private function getRoverLocationFace(string $roverName, LocationDTO $playGroundSize): LocationFaceDTO
     {
         do {
             $location = $this
-                ->ask("Ok I named one of your rover '$roverName' now let me know what is the location of $roverName ? example 1 3 e");
-            $maxXBoarder = $normalizedPlayGroundSize['x'];
-            $maxYBoarder = $normalizedPlayGroundSize['y'];
+                ->ask("Ok I named one of your rovers '$roverName' now let me know what is the location of $roverName ? example 1 3 n/e/s/w");
             $validator = Validator::make([
                 'rover_location' => $location
             ], [
-                'rover_location' => ['required', "regex:/\b([0-$maxXBoarder])[[:space:]]([0-$maxYBoarder])[[:space:]]\b(?i)(n|e|w|s)\b/"]
+                'rover_location' => ['required', "regex:/\b([0-$playGroundSize->x])[[:space:]]([0-$playGroundSize->y])[[:space:]]\b(?i)(n|e|w|s)\b/"]
             ]);
         } while ($validator->errors()->getMessages() != []);
 
-        return $location;
+        return $this->normalizeRoverLocationFace($location);
+    }
+
+    #[Pure] private function normalizeRoverLocationFace(string $locationFace): LocationFaceDTO
+    {
+        $explodePath = explode(' ', $locationFace);
+        $locationDTO = new LocationDTO($explodePath[0], $explodePath[1]);
+        $facing = match (strtolower($explodePath[2])) {
+            'e' => LocationFaceDTO::EAST,
+            'w' => LocationFaceDTO::WEST,
+            's' => LocationFaceDTO::SOUTH,
+            'n' => LocationFaceDTO::NORTH
+        };
+
+        return new LocationFaceDTO($locationDTO, $facing);
     }
 }

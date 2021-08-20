@@ -27,7 +27,7 @@ class MoveRovers extends Command
         parent::__construct();
     }
 
-    public function handle(Faker $faker, NormalizeLocationService $normalizeLocationService)
+    public function handle(Faker $faker)
     {
         $playGroundSize = $this->getPlaygroundSize();
         $roverControllerServiceCollection = $this->createRovers($faker, $playGroundSize);
@@ -107,10 +107,13 @@ class MoveRovers extends Command
             $validator = Validator::make([
                 'rover_location' => $location
             ], [
-                'rover_location' => ['required', "regex:/\b([0-$playGroundSize->x])[[:space:]]([0-$playGroundSize->y])[[:space:]]\b(?i)(n|e|w|s)\b/"]
+                'rover_location' => ['required', "regex:/\b([0-9]*)[[:space:]]([0-9]*)[[:space:]]\b(?i)(n|e|w|s)\b/"]
             ]);
-        } while ($validator->errors()->getMessages() != []);
+        } while (
+            $validator->errors()->getMessages() != [] ||
+            $playGroundSize < ($result = resolve(NormalizeRoverLocationFace::class)($location))->locationDTO
+        );
 
-        return resolve(NormalizeRoverLocationFace::class)($location);
+        return $result;
     }
 }

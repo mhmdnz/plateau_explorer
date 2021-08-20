@@ -17,11 +17,15 @@ class GetResultMessage
         $roverControllerServiceCollection->each(function (RoverControllerService $roverControllerService)
         use ($playGroundSize, &$result) {
             $name = $roverControllerService->roverDTO->name;
-            $currentPosition = $this->validateFinalLocation(
+            $currentPosition = self::NOT_VALID_LOCATION_MESSAGE;
+            $roverFace = self::NOT_VALID_LOCATION_MESSAGE;
+            if ($this->validateFinalLocation(
                 $playGroundSize,
                 $roverControllerService->getCurrentLocation()
-            ) ? json_encode($roverControllerService->getCurrentLocation()) : self::NOT_VALID_LOCATION_MESSAGE;
-            $roverFace = $roverControllerService->facing;
+            )) {
+                $currentPosition = json_encode($roverControllerService->getCurrentLocation());
+                $roverFace = $roverControllerService->facing;
+            }
             $result[] = "
             Rover_name: $name,
             Rover_currentPosition: $currentPosition

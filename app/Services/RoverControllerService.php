@@ -25,20 +25,20 @@ class RoverControllerService
     public function turnFaceLeft(): void
     {
         $this->facing = match ($this->facing) {
-            'n' => 'w',
-            'w' => 's',
-            's' => 'e',
-            'e' => 'n',
+            LocationFaceDTO::NORTH => LocationFaceDTO::WEST,
+            LocationFaceDTO::WEST => LocationFaceDTO::SOUTH,
+            LocationFaceDTO::SOUTH => LocationFaceDTO::EAST,
+            LocationFaceDTO::EAST => LocationFaceDTO::NORTH,
         };
     }
 
     public function turnFaceRight(): void
     {
         $this->facing = match ($this->facing) {
-            'n' => 'e',
-            'e' => 's',
-            's' => 'w',
-            'w' => 'n',
+            LocationFaceDTO::NORTH => LocationFaceDTO::EAST,
+            LocationFaceDTO::EAST => LocationFaceDTO::SOUTH,
+            LocationFaceDTO::SOUTH => LocationFaceDTO::WEST,
+            LocationFaceDTO::WEST => LocationFaceDTO::NORTH,
         };
     }
 

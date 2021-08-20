@@ -8,14 +8,11 @@ use Illuminate\Support\Collection;
 
 class RunRoversService
 {
-    public function __construct(public RoverControllerServiceCollection $roverCollection)
+    public function __invoke(RoverControllerServiceCollection $roverCollection)
     {
-    }
-    public function moveAll()
-    {
-        $this->roverCollection->each(function (RoverControllerService $roverControllerService) {
-           $moves = collect(str_split($roverControllerService->roverDTO->moves));
-           $this->moveToNewPosition($moves, $roverControllerService);
+        $roverCollection->each(function (RoverControllerService $roverControllerService) {
+            $moves = collect(str_split($roverControllerService->roverDTO->moves));
+            $this->moveToNewPosition($moves, $roverControllerService);
         });
     }
 

@@ -27,12 +27,11 @@ class MoveRovers extends Command
         parent::__construct();
     }
 
-    public function handle(Faker $faker)
+    public function handle(Faker $faker, RunRoversService $runRoversService)
     {
         $playGroundSize = $this->getPlaygroundSize();
         $roverControllerServiceCollection = $this->createRovers($faker, $playGroundSize);
-        $runRoversService = new RunRoversService($roverControllerServiceCollection);
-        $runRoversService->moveAll();
+        $runRoversService($roverControllerServiceCollection);
         $this->showResult($roverControllerServiceCollection, $playGroundSize);
     }
 
@@ -111,7 +110,9 @@ class MoveRovers extends Command
             ]);
         } while (
             $validator->errors()->getMessages() != [] ||
-            $playGroundSize < ($result = resolve(NormalizeRoverLocationFace::class)($location))->locationDTO
+            $playGroundSize < (
+                $result = resolve(NormalizeRoverLocationFace::class)($location)
+            )->locationDTO
         );
 
         return $result;

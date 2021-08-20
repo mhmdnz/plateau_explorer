@@ -6,7 +6,6 @@ use App\DTOs\LocationDTO;
 use App\DTOs\LocationFaceDTO;
 use App\DTOs\RoverDTO;
 use App\ObjectModels\RoverControllerServiceCollection;
-use App\Services\CreateRoverService;
 use App\Services\GetResultMessage;
 use App\Services\NormalizeLocationService;
 use App\Services\NormalizeRoverLocationFace;
@@ -82,7 +81,7 @@ class MoveRovers extends Command
         $locationFace = $this->getRoverLocationFace($roverName, $playGroundSize);
         $moves = $this->getRoverMoves($roverName);
 
-        return resolve(CreateRoverService::class)($roverName, $locationFace, $moves);
+        return new RoverDTO($roverName, $locationFace, $moves);
     }
 
     private function getRoverMoves(string $roverName): string

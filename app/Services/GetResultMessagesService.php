@@ -7,7 +7,10 @@ use App\Collections\RoverControllerServiceCollection;
 
 class GetResultMessagesService
 {
-    private const NOT_VALID_LOCATION_MESSAGE = 'This rover is not in a valid location of plateau :(';
+    const NOT_VALID_LOCATION_MESSAGE = 'This rover is not in a valid location of plateau :(';
+    const ROVER_NAME = 'Rover_name:';
+    const ROVER_CURRENT_POSITION = 'Rover_currentPosition:';
+    const ROVER_FACE_ORIENTATION = 'Rover_face_orientation:';
 
     public function __invoke(
         RoverControllerServiceCollection $roverControllerServiceCollection,
@@ -27,9 +30,9 @@ class GetResultMessagesService
                 $roverFace = $roverControllerService->roverDTO->locationFaceDTO->facing;
             }
             $messages[] = "
-            Rover_name: $name,
-            Rover_currentPosition: $currentPosition
-            Rover_face_orientation: $roverFace
+            ".self::ROVER_NAME." $name,
+            ".self::ROVER_CURRENT_POSITION." $currentPosition
+            ".self::ROVER_FACE_ORIENTATION." $roverFace
             ---------------------------------------
             ";
         });

@@ -5,7 +5,7 @@ namespace App\Services;
 use App\DTOs\LocationDTO;
 use App\ObjectModels\RoverControllerServiceCollection;
 
-class GetResultMessage
+class GetResultMessagesService
 {
     private const NOT_VALID_LOCATION_MESSAGE = 'This rover is not in a valid location of plateau :(';
 
@@ -13,9 +13,9 @@ class GetResultMessage
         RoverControllerServiceCollection $roverControllerServiceCollection,
         LocationDTO $playGroundSize
     ): array {
-        $result = [];
+        $messages = [];
         $roverControllerServiceCollection->each(function (RoverControllerService $roverControllerService)
-        use ($playGroundSize, &$result) {
+        use ($playGroundSize, &$messages) {
             $name = $roverControllerService->roverDTO->name;
             $currentPosition = self::NOT_VALID_LOCATION_MESSAGE;
             $roverFace = self::NOT_VALID_LOCATION_MESSAGE;
@@ -26,7 +26,7 @@ class GetResultMessage
                 $currentPosition = json_encode($roverControllerService->roverDTO->locationFaceDTO->locationDTO);
                 $roverFace = $roverControllerService->roverDTO->locationFaceDTO->facing;
             }
-            $result[] = "
+            $messages[] = "
             Rover_name: $name,
             Rover_currentPosition: $currentPosition
             Rover_face_orientation: $roverFace
@@ -34,7 +34,7 @@ class GetResultMessage
             ";
         });
 
-        return $result;
+        return $messages;
     }
 
     private function validateFinalLocation(LocationDTO $playGroundSize, LocationDTO $roverCurrentLocation):bool

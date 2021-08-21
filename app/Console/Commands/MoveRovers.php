@@ -6,7 +6,7 @@ use App\DTOs\LocationDTO;
 use App\DTOs\LocationFaceDTO;
 use App\DTOs\RoverDTO;
 use App\ObjectModels\RoverControllerServiceCollection;
-use App\Services\GetResultMessage;
+use App\Services\GetResultMessagesService;
 use App\Services\NormalizeLocationService;
 use App\Services\NormalizeRoverLocationFace;
 use App\Services\RoverControllerService;
@@ -45,10 +45,10 @@ class MoveRovers extends Command
         LocationDTO $normalizedPlayGroundSize
     ): void {
         $this->info(self::FINAL_RESULT_MESSAGE);
-        $results = resolve(GetResultMessage::class)
+        $finalMessages = resolve(GetResultMessagesService::class)
         ($roverControllerServiceCollection, $normalizedPlayGroundSize);
-        foreach ($results as $result){
-            $this->info($result);
+        foreach ($finalMessages as $message){
+            $this->info($message);
         }
     }
 

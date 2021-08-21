@@ -8,7 +8,7 @@ use App\DTOs\RoverDTO;
 use App\ObjectModels\RoverControllerServiceCollection;
 use App\Services\GetResultMessagesService;
 use App\Services\NormalizeLocationService;
-use App\Services\NormalizeRoverLocationFace;
+use App\Services\NormalizeRoverLocationFaceService;
 use App\Services\RoverControllerService;
 use App\Services\RunRoversService;
 use Faker\Generator as Faker;
@@ -116,7 +116,7 @@ class MoveRovers extends Command
         } while (
             $validator->errors()->getMessages() != [] ||
             $playGroundSize < (
-                $result = resolve(NormalizeRoverLocationFace::class)($location)
+                $result = resolve(NormalizeRoverLocationFaceService::class)($location)
             )->locationDTO
         );
 

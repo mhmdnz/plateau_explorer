@@ -6,7 +6,7 @@ use App\DTOs\LocationDTO;
 use App\DTOs\LocationFaceDTO;
 use JetBrains\PhpStorm\Pure;
 
-class NormalizeRoverLocationFace
+class NormalizeRoverLocationFaceService
 {
     #[Pure] public function __invoke(string $locationFace): LocationFaceDTO
     {

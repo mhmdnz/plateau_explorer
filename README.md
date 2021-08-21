@@ -1,64 +1,149 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Plateau Explorer
+<hr>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+> Plateau Explorer is an intelligent command line application to control some rovers to explore a plateau on Mars 
 
-## About Laravel
+> The Application is written by Laravel, if you are not familiar with the environment please check the link below:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+[Laravel Installation](https://laravel.com/docs/8.x/installation)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Topics
+- [Description](#Description)
+- [How is it work](#How-is-it-work)
+- [Installation guid](#Installation-Guid)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+# Description
+<hr>
 
-## Learning Laravel
+A squad of robotic rovers is to be landed by NASA on a plateau on Mars.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+This plateau, which is curiously rectangular, must be navigated by the rovers so that their on-board cameras can get a complete view of the surrounding terrain to send back to Earth.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+A rover's position is represented by a combination of x and y coordinates and a letter
 
-## Laravel Sponsors
+representing one of the four cardinal compass points. The plateau is divided up into a grid to
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+simplify navigation. An example position might be 0, 0, N, which means the rover is in the
 
-### Premium Partners
+bottom left corner and facing North.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+In order to control a rover, NASA sends a simple string of letters. The possible letters are 'L', 'R'
 
-## Contributing
+and 'M'. 'L' and 'R' make the rover spin 90 degrees left or right respectively, without moving
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+from its current spot.
 
-## Code of Conduct
+'M' means move forward one grid point and maintain the same heading.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Assume that the square directly North from (x, y) is (x, y+1).
 
-## Security Vulnerabilities
+Input:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The first line of input is the upper-right coordinates of the plateau, the lower-left coordinates are
 
-## License
+assumed to be 0,0.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The rest of the input is information pertaining to the rovers that have been deployed. Each rover
+
+has two lines of input. The first line gives the rover's position, and the second line is a series of
+
+instructions telling the rover how to explore the plateau.
+
+The position is made up of two integers and a letter separated by spaces, corresponding to the
+
+x and y coordinates and the rover's orientation.
+
+Each rover will be finished sequentially, which means that the second rover won't start to move
+
+until the first one has finished moving.
+
+<b> Output:
+
+The output for each rover should be its final coordinates and heading.
+
+## How is it work ?
+<hr>
+
+### Let`s imagine we want to send two rovers on a Plateau with coordinates (x=5,y=5) size:
+####so the location of (firstRover) is (0,2,EAST)
+####and the location of (secondRover) is (2,1,WEST)
+|  |  |  |  | |
+| :----------- | :------------: | :------------: | :------------:|:------------: | 
+|    |     | |  |  |
+|  (FirstRover) ->  |     | |  |  |
+|    |     | <- (SecondRover) |  |  |
+|    |     |  |  |  |
+
+
+
+### And if we send move command for both of them their position would be like this :
+
+|  |  |  |  | |
+| :----------- | :------------: | :------------: | :------------:|:------------: | 
+|    |     | |  |  |
+|    |   (FirstRover) ->  | |  |  |
+|    |   <- (SecondRover)  |  |  |  |
+|    |     |  |  |  |
+
+<hr>
+
+### So to have above test, system will start asking you some questions
+```sh
+$ php artisan rovers:explore
+$ Lets start with the size of our plateau, could you please enter the max X Y? => example : 6 6:
+> 5 5
+$ Ok I named one of your rovers 'Eleonore Grant' now let me know what is the location of Eleonore Grant ? example 1 3 n/e/s/w:
+> 0 2 e
+$ Ok I`ve got the location of Eleonore Grant, So what are the moves for that ? example MMRMMRMRRM:
+> m
+$ Do you have another rover? (yes/no) [no]:
+> yes
+$ Ok I named one of your rovers 'Test Name' now let me know what is the location of Test Name ? example 1 3 n/e/s/w:
+> 2 1 w
+$ Ok I`ve got the location of Test Name, So what are the moves for that ? example MMRMMRMRRM:
+> m
+$ Do you have another rover? (yes/no) [no]:
+> no
+======  WWwooooww, That`s it, I hope you enjoy the results  =====
+
+            Rover_name: Eleonore Grant,
+            Rover_currentPosition: {"x":1,"y":2}
+            Rover_face_orientation: East
+            ---------------------------------------
+            
+
+            Rover_name: Test Name,
+            Rover_currentPosition: {"x":1,"y":1}
+            Rover_face_orientation: West
+            ---------------------------------------
+```
+
+# Installation Guid
+
+### Clone project From Git
+
+```sh
+$ mkdir plateau_explorer
+$ cd plateau_explorer
+$ git clone "https://github.com/mhmdnz/plateau_explorer.git" .
+$ composer install
+```
+### Start playing
+
+To start program you should run
+```sh
+$ php artisan rovers:explore
+```
+![Alt text](img_1.png?raw=true "Title")
+### Run Tests
+
+The Feature/Unit tests are available in tests directory 
+```sh
+//you can run all the tests by running below command in the project root
+$ php artisan test
+```
+![Alt text](img.png?raw=true "Title")
+```sh
+//you can run only one test by using this command
+$ php artisan test {testAddress}
+```

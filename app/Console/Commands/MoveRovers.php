@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Validator;
 
 class MoveRovers extends Command
 {
-    private const FINAL_RESULT_MESSAGE = '======  WWwooooww, That`s it, I hope you enjoy the results  =====';
-    private const GET_PLAYGROUND_SIZE_MESSAGE = 'Lets start with the size of our plateau, could you please enter the max X Y? => example : 6 6';
-    private const ASK_FOR_ANOTHER_ROVER_MESSAGE = 'Do you have another rover?';
-    private const GET_ROVER_LOCATION_FACE_MESSAGE = "Ok I named one of your rovers ':roverName' now let me know what is the location of :roverName ? example 1 3 n/e/s/w";
-    private const GET_ROVER_MOVES_MESSAGE = 'Ok I`ve got the location of :roverName, So what are the moves for that ? example MMRMMRMRRM';
+    const FINAL_RESULT_MESSAGE = '======  WWwooooww, That`s it, I hope you enjoy the results  =====';
+    const GET_PLAYGROUND_SIZE_MESSAGE = 'Lets start with the size of our plateau, could you please enter the max X Y? => example : 6 6';
+    const ASK_FOR_ANOTHER_ROVER_MESSAGE = 'Do you have another rover?';
+    const GET_ROVER_LOCATION_FACE_MESSAGE = "Ok I named one of your rovers ':roverName' now let me know what is the location of :roverName ? example 1 3 n/e/s/w";
+    const GET_ROVER_MOVES_MESSAGE = 'Ok I`ve got the location of :roverName, So what are the moves for that ? example MMRMMRMRRM';
 
     protected $signature = 'rovers:explore';
 
@@ -111,14 +111,22 @@ class MoveRovers extends Command
             $validator = Validator::make([
                 'rover_location' => $location
             ], [
-                'rover_location' => ['required', "regex:/\b([0-9]*)[[:space:]]([0-9]*)[[:space:]]\b(?i)(n|e|w|s)\b/"]
+                'rover_location' => ['required', "regex:/\b^([0-9]*)[[:space:]]([0-9]*)[[:space:]]\b(?i)(n|e|w|s)\b/"]
             ]);
-        } while (
-            $validator->errors()->getMessages() != [] ||
-            $playGroundSize < (
-                $result = resolve(NormalizeRoverLocationFaceService::class)($location)
-            )->locationDTO
-        );
+            $isValidated = false;
+            if ($validator->errors()->getMessages() == []) {
+                /**
+                 * @var LocationFaceDTO $result
+                 */
+                $result = resolve(NormalizeRoverLocationFaceService::class)($location);
+                if (
+                    $playGroundSize->x >= $result->locationDTO->x &&
+                    $playGroundSize->y >= $result->locationDTO->y
+                ){
+                    $isValidated = true;
+                }
+            }
+        } while (!$isValidated);
 
         return $result;
     }

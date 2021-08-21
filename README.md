@@ -3,10 +3,11 @@
 
 > Plateau Explorer is an intelligent command line application to control some rovers to explore a plateau on Mars 
 
-> The Application is written by Laravel, if you are not familiar with the environment please check the link below:
+> The Application is written by `Laravel`, if you are not familiar with the environment please check the link below:
 
 [Laravel Installation](https://laravel.com/docs/8.x/installation)
 
+> Also be sure that you have `php 8` and `composer`
 ## Topics
 - [Description](#Description)
 - [How is it work](#How-is-it-work)

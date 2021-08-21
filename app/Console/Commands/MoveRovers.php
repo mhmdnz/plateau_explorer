@@ -17,16 +17,15 @@ use Illuminate\Support\Facades\Validator;
 
 class MoveRovers extends Command
 {
-    protected $signature = 'rovers:explore';
-
-    protected $description = 'With this command you will be able to explore a plateau on Mars';
-
     private const FINAL_RESULT_MESSAGE = '======  WWwooooww, That`s it, I hope you enjoy the results  =====';
     private const GET_PLAYGROUND_SIZE_MESSAGE = 'Lets start with the size of our plateau, could you please enter the max X Y? => example : 6 6';
     private const ASK_FOR_ANOTHER_ROVER_MESSAGE = 'Do you have another rover?';
     private const GET_ROVER_LOCATION_FACE_MESSAGE = "Ok I named one of your rovers ':roverName' now let me know what is the location of :roverName ? example 1 3 n/e/s/w";
     private const GET_ROVER_MOVES_MESSAGE = 'Ok I`ve got the location of :roverName, So what are the moves for that ? example MMRMMRMRRM';
 
+    protected $signature = 'rovers:explore';
+
+    protected $description = 'With this command you will be able to explore a plateau on Mars';
 
     public function __construct()
     {

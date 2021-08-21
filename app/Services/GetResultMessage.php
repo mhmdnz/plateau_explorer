@@ -21,10 +21,10 @@ class GetResultMessage
             $roverFace = self::NOT_VALID_LOCATION_MESSAGE;
             if ($this->validateFinalLocation(
                 $playGroundSize,
-                $roverControllerService->getCurrentLocation()
+                $roverControllerService->roverDTO->locationFaceDTO->locationDTO
             )) {
-                $currentPosition = json_encode($roverControllerService->getCurrentLocation());
-                $roverFace = $roverControllerService->facing;
+                $currentPosition = json_encode($roverControllerService->roverDTO->locationFaceDTO->locationDTO);
+                $roverFace = $roverControllerService->roverDTO->locationFaceDTO->facing;
             }
             $result[] = "
             Rover_name: $name,

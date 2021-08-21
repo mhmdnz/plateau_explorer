@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\LocationDTO;
-use App\ObjectModels\RoverControllerServiceCollection;
+use App\Collections\RoverControllerServiceCollection;
 
 class GetResultMessagesService
 {

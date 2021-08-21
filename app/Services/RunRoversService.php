@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\DTOs\RoverDTO;
-use App\ObjectModels\RoverControllerServiceCollection;
+use App\Collections\RoverControllerServiceCollection;
 use Illuminate\Support\Collection;
 
 class RunRoversService

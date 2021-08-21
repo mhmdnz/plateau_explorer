@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ObjectModels;
+namespace App\Collections;
 
 use App\Services\RoverControllerService;
 use Illuminate\Support\Collection;

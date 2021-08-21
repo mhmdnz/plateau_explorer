@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\DTOs\LocationDTO;
 use App\DTOs\LocationFaceDTO;
 use App\DTOs\RoverDTO;
-use App\ObjectModels\RoverControllerServiceCollection;
+use App\Collections\RoverControllerServiceCollection;
 use App\Services\GetResultMessagesService;
 use App\Services\NormalizeLocationService;
 use App\Services\NormalizeRoverLocationFaceService;

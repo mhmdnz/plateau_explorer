@@ -32,7 +32,7 @@ class MoveRovers extends Command
         parent::__construct();
     }
 
-    public function handle(Faker $faker, RunRoversService $runRoversService)
+    public function handle(Faker $faker, RunRoversService $runRoversService): void
     {
         $playGroundSize = $this->getPlaygroundSize();
         $roverControllerServiceCollection = $this->createRovers($faker, $playGroundSize);

@@ -8,7 +8,7 @@ use Illuminate\Support\Collection;
 
 class RunRoversService
 {
-    public function __invoke(RoverControllerServiceCollection $roverCollection)
+    public function __invoke(RoverControllerServiceCollection $roverCollection): void
     {
         $roverCollection->each(function (RoverControllerService $roverControllerService) {
             $moves = collect(str_split($roverControllerService->roverDTO->moves));
@@ -18,7 +18,7 @@ class RunRoversService
 
     private function moveToNewPosition(Collection $moves, RoverControllerService $roverControllerService): void
     {
-        $moves->each(function ($action) use ($roverControllerService) {
+        $moves->each(function (string $action) use ($roverControllerService) {
             match ($action) {
                 RoverDTO::RIGHT => $roverControllerService->turnFaceRight(),
                 RoverDTO::LEFT => $roverControllerService->turnFaceLeft(),

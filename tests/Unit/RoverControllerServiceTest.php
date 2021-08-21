@@ -44,8 +44,8 @@ class RoverControllerServiceTest extends TestCase
         $sut->move();
 
         //ASSERT
-        $this->assertEquals($sut->roverDTO->locationFaceDTO->locationDTO->x, 10);
-        $this->assertEquals($sut->roverDTO->locationFaceDTO->locationDTO->y, 11);
+        $this->assertEquals($sut->roverDTO->locationFaceDTO->locationDTO->x, 11);
+        $this->assertEquals($sut->roverDTO->locationFaceDTO->locationDTO->y, 10);
     }
 
     private function resolveAction(): RoverControllerService
